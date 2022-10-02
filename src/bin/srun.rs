@@ -17,18 +17,23 @@ async fn main() {
         .expect("Failed to start srun login core");
     
     loop {
-        if let Ok(Some(_status)) = core.try_wait() {
-            driver.kill().unwrap();
-        } else if let Ok(None) = core.try_wait() {
-            sleep(Duration::from_millis(10000)).await;
+        let driver_status = driver.try_wait().expect("Can't get status of webdriver");
+        let core_status = core.try_wait().expect("Cat get status of srun-core");
+        if let Some(_driver_status) = driver_status {
+            if let None = core_status {
+                core.kill().expect("Failed to kill srun-core, may need to kill manually.");
+            }
+            break ();
         } else {
-            core.kill().unwrap();
-            driver.kill().unwrap();
+            if let Some(_core_status) = core_status {
+                driver.kill().expect("Failed to kill webdriver, may need to kill it manually.");
+                break ();
+            }
         }
+        sleep(Duration::from_millis(10000)).await;
     }
 }
 
-#[cfg(not(windows))]
 fn current_dir_file(filename: &str) -> PathBuf {
     let mut current_dir = PathBuf::from(
         current_exe()
@@ -37,18 +42,7 @@ fn current_dir_file(filename: &str) -> PathBuf {
             .expect("Strange path found"),
     );
     current_dir.push(filename);
-    current_dir.iter().collect()
-}
-
-#[cfg(windows)]
-fn current_dir_file(filename: &str) -> PathBuf {
-    let mut current_dir = PathBuf::from(
-        current_exe()
-            .expect("Failed to get current dir.")
-            .parent()
-            .expect("Strange path found"),
-    );
-    current_dir.push(filename);
+    #[cfg(windows)]
     current_dir.set_extension("exe");
     current_dir.iter().collect()
 }
