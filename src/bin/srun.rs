@@ -1,6 +1,6 @@
 use srun::config::Config;
-use std::{env::current_exe, path::PathBuf, process::Command, time::Duration};
-use tokio::time::sleep;
+use std::{env::current_exe, path::PathBuf, time::Duration};
+use tokio::{time::sleep, process::Command, select};
 
 #[tokio::main]
 async fn main() {
@@ -15,22 +15,23 @@ async fn main() {
     let mut core = Command::new(core_path)
         .spawn()
         .expect("Failed to start srun login core");
-    
-    loop {
-        let driver_status = driver.try_wait().expect("Can't get status of webdriver");
-        let core_status = core.try_wait().expect("Cat get status of srun-core");
-        if let Some(_driver_status) = driver_status {
-            if let None = core_status {
-                core.kill().expect("Failed to kill srun-core, may need to kill manually.");
+    select! {
+        status = core.wait() => {
+            if let Ok(status) = status {
+                println!("srun-core was killed. status code: {}", status);
+            } else {
+                println!("Losing control of srun-core");
             }
-            break ();
-        } else {
-            if let Some(_core_status) = core_status {
-                driver.kill().expect("Failed to kill webdriver, may need to kill it manually.");
-                break ();
-            }
+            driver.kill().await.expect("Failed to kill driver process.")
         }
-        sleep(Duration::from_millis(10000)).await;
+        status = driver.wait() => {
+            if let Ok(status) = status {
+                println!("webdriver was killed. status code: {}", status);
+            } else {
+                println!("Losing control of webdriver");
+            }
+            core.kill().await.expect("Failed to kill srun-core process.")
+        }
     }
 }
 
@@ -44,5 +45,5 @@ fn current_dir_file(filename: &str) -> PathBuf {
     current_dir.push(filename);
     #[cfg(windows)]
     current_dir.set_extension("exe");
-    current_dir.iter().collect()
+    current_dir
 }
