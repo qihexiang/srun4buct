@@ -9,7 +9,7 @@ async fn main() {
     let config = Config::load().await;
     loop {
         let driver = config.init_browser().await;
-        match driver {      
+        match driver {
             Ok(driver) => {
                 if error_happend <= config.max_failed() {
                     match daemon(&driver, &config).await {
@@ -23,8 +23,8 @@ async fn main() {
                 } else {
                     panic!("错误次数超过预期，程序退出，请参考日志。")
                 }
-            },
-            Err(err) => panic!("{}", err.to_string())
+            }
+            Err(err) => panic!("{}", err.to_string()),
         }
     }
 }

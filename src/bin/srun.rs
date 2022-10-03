@@ -1,6 +1,6 @@
 use srun::config::Config;
 use std::{env::current_exe, path::PathBuf, time::Duration};
-use tokio::{time::sleep, process::Command, select};
+use tokio::{process::Command, select, time::sleep};
 
 #[tokio::main]
 async fn main() {

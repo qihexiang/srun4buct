@@ -1,10 +1,9 @@
-use std::{time::Duration};
-use std::fs::read_to_string;
-use serde::{Deserialize, Serialize};
-use thirtyfour::prelude::*;
 use directories::BaseDirs;
+use serde::{Deserialize, Serialize};
+use std::fs::read_to_string;
 use std::path::PathBuf;
-
+use std::time::Duration;
+use thirtyfour::prelude::*;
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -35,7 +34,7 @@ impl Config {
             "firefox" => "geckodriver",
             "chrome" => "chromedriver",
             "edge" => "edgedriver",
-            _ => panic!("Unsupported browser. Only support firefox, chrome and edge now.")
+            _ => panic!("Unsupported browser. Only support firefox, chrome and edge now."),
         }
     }
 
@@ -61,7 +60,7 @@ impl Config {
                 let caps = DesiredCapabilities::edge();
                 let driver = WebDriver::new(&self.driver, caps).await?;
                 Ok(driver)
-            },
+            }
             _ => panic!("Unsupported browser. Only support firefox, chrome and edge now."),
         }
     }
@@ -86,4 +85,3 @@ impl Config {
         self.max_failed
     }
 }
-
