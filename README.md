@@ -19,7 +19,7 @@
     "username": "2021200902",
     "password": "password here",
     "browser": "firefox",
-    "driver": "http://localhost:4444",
+    "addr": "http://localhost:4444",
     "interval": 300000,
     "headless": true,
     "waiting": [5000, 1000],
@@ -29,7 +29,7 @@
 
 > 除了username和password外，其余选项都是可选的，默认值为上述所显示的值。
 
-其中，driver是驱动程序启动后监听的路径，例如geckodriver启动后监听`http://localhost:4444`，若为chromedriver，则应该使用`http://localhost:9515`；interval是检查是否掉线的时间间隔，单位为毫秒；headless设置为true时，浏览器将以无图形界面的形式启动；waiting参数用于等待页面内容加载，其中第一个数字是等待的总时长，第二个数字是等待期间重新检查的间隔；max_failed是守护进程运行期间，可以发生错误的次数，当发生错误的次数大于该处指定数字时，程序会退出。
+其中，addr是驱动程序启动后监听的路径，例如geckodriver启动后监听`http://localhost:4444`，若为chromedriver，则应该使用`http://localhost:9515`；interval是检查是否掉线的时间间隔，单位为毫秒；headless设置为true时，浏览器将以无图形界面的形式启动；waiting参数用于等待页面内容加载，其中第一个数字是等待的总时长，第二个数字是等待期间重新检查的间隔；max_failed是守护进程运行期间，可以发生错误的次数，当发生错误的次数大于该处指定数字时，程序会退出。
 
 `srun`会根据配置文件自动从PATH启动一个新的WebDriver进程和一个`srun-core`进程，结束时应该会自动全部结束，而`srun-core`则会尝试连接到已经存在的服务。
 
