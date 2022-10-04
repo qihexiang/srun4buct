@@ -58,7 +58,7 @@ impl Core {
         let path: PathBuf = path.iter().collect();
         let config_file: String = read_to_string(path)
             .expect(format!("无法读取目标文件，请在用户目录下放置.srun.rs.json").as_str());
-        let config: Core = serde_json::from_str(&config_file).expect("无法解析文件，需要以下项目：\n字符串：username, password, browser\n数字：interval\n布尔值：headless\n整数二元元组：waiting");
+        let config: Core = serde_json::from_str(&config_file).expect("无法解析文件，需要以下项目：\n字符串：username, password, browser, addr\n数字：interval\n布尔值：headless\n整数二元元组：waiting");
         config
     }
 
