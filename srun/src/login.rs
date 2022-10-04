@@ -19,10 +19,10 @@ pub async fn check_login_status(
     logout_button
 }
 
-pub async fn login<'a>(
+pub async fn login(
     driver: &WebDriver,
-    username: &'a str,
-    password: &'a str,
+    username: &str,
+    password: &str,
     waiting: (Duration, Duration),
 ) -> WebDriverResult<()> {
     let logout_button = check_login_status(driver, waiting).await;
@@ -58,10 +58,10 @@ pub async fn logout(driver: &WebDriver, waiting: (Duration, Duration)) -> WebDri
     }
 }
 
-pub async fn switch_user<'a>(
+pub async fn switch_user(
     driver: &WebDriver,
-    username: &'a str,
-    password: &'a str,
+    username: &str,
+    password: &str,
     waiting: (Duration, Duration),
 ) -> WebDriverResult<()> {
     logout(driver, waiting).await?;
