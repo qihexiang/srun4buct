@@ -1,17 +1,16 @@
-use srun::config::Config;
+use srun::core::Core;
 use std::{env::current_exe, path::PathBuf, time::Duration};
 use tokio::{process::Command, select, time::sleep};
 
 #[tokio::main]
 async fn main() {
-    let config = Config::load().await;
-    let driver_name = config.driver_name();
+    let core = Core::load().await;
+    let driver_name = core.driver_name();
     let mut driver = Command::new(driver_name)
         .spawn()
         .expect("Failed to start driver process");
     sleep(Duration::from_millis(1000)).await;
     let core_path = current_dir_file("srun-core");
-    println!("{:?}", core_path);
     let mut core = Command::new(core_path)
         .spawn()
         .expect("Failed to start srun login core");
