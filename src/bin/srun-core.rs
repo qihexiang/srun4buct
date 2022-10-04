@@ -1,8 +1,9 @@
 use srun::config::Config;
 use srun::login::{check_login_status, login, switch_user};
-use std::thread::sleep;
 use thirtyfour::prelude::WebDriverResult;
 use thirtyfour::WebDriver;
+use tokio::time::sleep;
+
 #[tokio::main]
 async fn main() {
     let mut error_happend: u64 = 0;
@@ -39,7 +40,7 @@ async fn daemon(driver: &WebDriver, config: &Config) -> WebDriverResult<()> {
         login(&driver, username, password, waiting).await?;
     }
     loop {
-        sleep(config.check_interval());
+        sleep(config.check_interval()).await;
         login(&driver, username, password, waiting).await?
     }
 }
